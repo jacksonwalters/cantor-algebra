@@ -2,8 +2,9 @@
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21613013.svg)](https://doi.org/10.5281/zenodo.21613013)
 
-A Lean 4 formalization of the cylinder-set construction underlying the
-countable atomless Boolean algebra, also known as the Cantor algebra.
+A Lean 4 formalization of the construction, topology, Stone representation,
+and uniqueness of the countable atomless Boolean algebra, also known as the
+Cantor algebra.
 
 The construction begins with Cantor space, represented as the type of infinite
 Boolean sequences `ℕ → Bool`. A finite bitstring determines a cylinder set:
@@ -24,11 +25,19 @@ The development:
 - expresses complements and intersections of finite unions of cylinders as
   finite unions of cylinders;
 - constructs `CountableAtomlessBA` as a `BooleanSubalgebra (Set Cantor)`;
-- proves that every cylinder splits into two disjoint, nonempty cylinders; and
+- proves that every cylinder splits into two disjoint, nonempty cylinders;
 - proves that every nonempty element of `CountableAtomlessBA` contains a
-  nonempty proper subelement.
+  nonempty proper subelement;
+- proves that its carrier is countable and nontrivial;
+- equips Cantor space with the product topology and proves that cylinders form
+  a clopen basis;
+- identifies the constructed algebra with **all** clopen subsets of Cantor space;
+- defines the Stone space using Boolean characters and proves it is homeomorphic
+  to Cantor space and to the middle-thirds Cantor subset of the real line;
+- proves Stone representation for arbitrary Boolean algebras; and
+- proves uniqueness of the nontrivial countable atomless Boolean algebra.
 
-The main theorem is:
+The original atomlessness theorem is:
 
 ```lean
 theorem CountableAtomlessBA_is_atomless :
@@ -36,9 +45,47 @@ theorem CountableAtomlessBA_is_atomless :
   ∃ a ∈ CountableAtomlessBA.carrier, a.Nonempty ∧ a ⊂ b
 ```
 
-The formalization currently establishes the Boolean-algebra construction and
-its atomlessness. Countability and uniqueness up to Boolean-algebra
-isomorphism are not formalized here.
+The main additional results, in namespace `AtomlessBooleanAlgebra`, are:
+
+```lean
+theorem CountableAtomlessBA_countable : CountableAtomlessBA.carrier.Countable
+
+theorem mem_CountableAtomlessBA_iff_isClopen (A : Set Cantor) :
+  A ∈ CountableAtomlessBA.carrier ↔ IsClopen A
+
+def clopensOrderIso : CountableAtomlessBA ≃o TopologicalSpace.Clopens Cantor
+
+noncomputable def stoneHomeomorphCantor :
+  StoneSpace CountableAtomlessBA ≃ₜ Cantor
+
+noncomputable def stoneHomeomorphCantorSet :
+  StoneSpace CountableAtomlessBA ≃ₜ cantorSet
+
+theorem countable_atomless_unique (B : Type*)
+    [BooleanAlgebra B] [Nontrivial B] [Countable B]
+    (hB : Atomless B) : Nonempty (B ≃o CountableAtomlessBA)
+```
+
+Here `Atomless B` means that every nonzero element has a nonzero proper
+subelement. An order isomorphism `≃o` between Boolean algebras preserves joins,
+meets, bottom, top, and complements, so the uniqueness theorem is a
+Boolean-algebra classification. `countable_atomless_iso` also gives an
+isomorphism between any two algebras satisfying these hypotheses.
+
+`StoneSpace B` is the type of bounded lattice homomorphisms `B → Bool`, with
+the topology induced from the product `B → Bool`. These homomorphisms preserve
+complements and represent Boolean-algebra ultrafilters by their characteristic
+functions. The basic open associated with `b` consists of characters taking
+`b` to `true`. This replaces the earlier, incorrect stub using set-theoretic
+`Ultrafilter B` and singleton membership.
+
+The canonical map from Cantor space evaluates membership in clopen sets.
+Compactness proves its surjectivity, and cylinders separate points. For general
+uniqueness, binary partitions successively decide an enumeration of the
+algebra; their branches identify its Stone space with Cantor space. Stone
+representation then transports the clopen algebra isomorphism. The final
+identification with the middle-thirds set reuses mathlib's
+`cantorSetHomeomorphNatToBool`.
 
 ## Building
 
@@ -47,15 +94,25 @@ The project uses Lean 4.26.0 and mathlib 4.26.0. With
 and Lake manifest select the required versions automatically:
 
 ```sh
-git clone https://github.com/jacksonwalters/countable-atomless-boolean-algebra.git
-cd countable-atomless-boolean-algebra
+git clone https://github.com/jacksonwalters/cantor-algebra.git
+cd cantor-algebra
 lake build
 ```
 
 ## Project structure
 
 - [`AtomlessBooleanAlgebra/Basic.lean`](AtomlessBooleanAlgebra/Basic.lean)
-  contains the construction and proofs.
+  contains the cylinder construction and atomlessness proof.
+- [`AtomlessBooleanAlgebra/Countability.lean`](AtomlessBooleanAlgebra/Countability.lean)
+  proves countability and nontriviality.
+- [`AtomlessBooleanAlgebra/Topology.lean`](AtomlessBooleanAlgebra/Topology.lean)
+  proves the clopen characterization and connects the two Cantor-space models.
+- [`AtomlessBooleanAlgebra/Stone.lean`](AtomlessBooleanAlgebra/Stone.lean)
+  defines Stone space and proves the canonical homeomorphism for this algebra.
+- [`AtomlessBooleanAlgebra/Representation.lean`](AtomlessBooleanAlgebra/Representation.lean)
+  proves general Stone representation using prime-ideal separation.
+- [`AtomlessBooleanAlgebra/Uniqueness.lean`](AtomlessBooleanAlgebra/Uniqueness.lean)
+  constructs binary refinements and proves general uniqueness.
 - [`AtomlessBooleanAlgebra.lean`](AtomlessBooleanAlgebra.lean) is the library
   entry point.
 

@@ -4,13 +4,11 @@ import Mathlib.Data.Set.Basic
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Fintype.Pi
 import Mathlib.Data.Finset.Union
-import Mathlib.Order.Filter.Ultrafilter.Defs
 import Mathlib.Order.BooleanSubalgebra
 import Mathlib.Order.BooleanAlgebra.Basic
 import Mathlib.Order.RelClasses
 
 open Set
-open Filter
 
 namespace AtomlessBooleanAlgebra
 
@@ -431,9 +429,3 @@ theorem CountableAtomlessBA_is_atomless :
   exact ⟨a, ha, ha_nonempty, ha_ssubset_b⟩
 
 end AtomlessBooleanAlgebra
-
-def StoneSpace (B : Type _) [BooleanAlgebra B] := Ultrafilter B
-
-def StoneBasicOpen {B : Type _} [BooleanAlgebra B] (b : B) :
-  Set (Ultrafilter B) :=
-  { F | {b} ∈ F.toFilter }
