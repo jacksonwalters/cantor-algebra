@@ -12,8 +12,9 @@ the set of all infinite sequences having that bitstring as a prefix. Finite
 unions of cylinder sets form a Boolean subalgebra of the power set of Cantor
 space.
 
-For mathematical motivation and a paper proof of the construction, see
-[Construction of the Cantor Algebra](https://jacksonwalters.com/docs/notes/construction_countable_atomless_boolean_algebra.pdf).
+For mathematical motivation and proofs of the construction, Stone representation,
+and uniqueness, see
+[Construction of the Cantor Algebra](https://doi.org/10.5281/zenodo.24379100).
 
 ## Formalized results
 

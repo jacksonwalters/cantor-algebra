@@ -7,10 +7,10 @@ authors:
     orcid: "https://orcid.org/0000-0002-5814-7393"
     affiliation: "Northern Virginia Community College"
 type: software
-version: 1.0.0
-date-released: 2026-07-26
+version: 1.1.0
+date-released: 2026-11-19
 license: MIT
-repository-code: "https://github.com/jacksonwalters/countable-atomless-boolean-algebra"
+repository-code: "https://github.com/jacksonwalters/cantor-algebra"
 keywords:
   - "Lean"
   - "Boolean algebra"
